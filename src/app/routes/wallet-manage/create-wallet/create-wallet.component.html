@@ -1,0 +1,73 @@
+<page-header title="{{ title | translate }}" [breadcrumb]="breadcrumb" [action]="action">
+  <ng-template #breadcrumb>
+    <dc-breadcrumb [histories]="histories"></dc-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <button *ngIf="!created" nz-button (click)="exit()">{{ 'back' | translate }}</button>
+  </ng-template>
+</page-header>
+
+<form *ngIf="!created" nz-form [formGroup]="form" (ngSubmit)="submit()" se-container="1">
+  <nz-spin [nzSpinning]="processing">
+    <nz-card [nzBordered]="false" style="padding-bottom: 60px;">
+      <se label="路徑" error="請選擇路徑" required>
+        <nz-input-group nzSearch [nzAddOnAfter]="selectPath">
+          <input nz-input type="text" style="min-width: 360px;" formControlName="WalletJsonPath" />
+        </nz-input-group>
+        <ng-template #selectPath>
+          <button type="button" nz-button (click)="selectWalletPath()">選擇錢包目錄</button>
+        </ng-template>
+      </se>
+      <se label="錢包名" error="請填寫錢包名" required>
+        <input nz-input type="text" formControlName="Name" />
+      </se>
+      <se label="密碼" error="請填寫密碼(至少10位，至少包含一個數字和大小寫字母)" required>
+        <nz-input-group [nzSuffix]="pwdTpl">
+          <input [type]="passwordVisible ? 'text' : 'password'" nz-input formControlName="OriginalPwd" />
+        </nz-input-group>
+        <ng-template #pwdTpl>
+          <i nz-icon [nzType]="passwordVisible ? 'eye' : 'eye-invisible'"
+            (click)="passwordVisible = !passwordVisible"></i>
+        </ng-template>
+      </se>
+      <se label="確認密碼" error="確認密碼必須與密碼一致" required>
+        <nz-input-group [nzSuffix]="confirmPwdTpl">
+          <input [type]="confirmPasswordVisible ? 'text' : 'password'" nz-input formControlName="ConfirmPwd" />
+        </nz-input-group>
+        <ng-template #confirmPwdTpl>
+          <i nz-icon [nzType]="confirmPasswordVisible ? 'eye' : 'eye-invisible'"
+            (click)="confirmPasswordVisible = !confirmPasswordVisible"></i>
+        </ng-template>
+      </se>
+      <se label="密碼提示">
+        <input nz-input type="text" formControlName="PWDHint" />
+      </se>
+      <se label="備註">
+        <textarea nz-input formControlName="Remark"></textarea>
+      </se>
+    </nz-card>
+    <footer-toolbar errorCollect>
+      <button nz-button nzType="primary" type="submit" [nzLoading]="processing">
+        {{ 'submit' | translate }}
+      </button>
+    </footer-toolbar>
+  </nz-spin>
+</form>
+
+<form *ngIf="created" nz-form [formGroup]="form" (ngSubmit)="submit()" se-container="1">
+  <nz-card [nzBordered]="false" style="padding-bottom: 100px;">
+    <div style="margin-bottom: 30px;">
+      <nz-alert nzType="success" nzMessage="錢包創建成功" nzShowIcon nzDescription="{{'walletCreatedTip' | translate}}">
+      </nz-alert>
+    </div>
+
+    <se label="助記詞" class="short-label-se">
+      <textarea nz-input style="height: 160px;" formControlName="mnemonic" class="fake-disabled"></textarea>
+    </se>
+
+    <div class="footer">
+      <button nz-button type="button" (click)="copy()">複製助記詞</button>
+      <button nz-button type="button" nzType="primary" (click)="finish()">我已記錄完畢，可以關閉</button>
+    </div>
+  </nz-card>
+</form>

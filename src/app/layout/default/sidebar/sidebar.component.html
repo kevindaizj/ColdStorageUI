@@ -1,0 +1,29 @@
+<div class="alain-default__aside-inner">
+  <nz-dropdown nzTrigger="click" class="alain-default__aside-user">
+    <div nz-dropdown class="user-block-dropdown">
+      <div>
+        <nz-avatar class="alain-default__aside-user-avatar" nzSize="large" [nzSrc]="settings.user.avatar"></nz-avatar>
+      </div>
+      <div class="alain-default__aside-user-info">
+        <strong>{{ settings.user.name }}</strong>
+        <p class="text-truncate mb0">{{ settings.user['RoleId'] | nxDict: 'RoleType' }}</p>
+      </div>
+    </div>
+    <ul nz-menu>
+      <li nz-menu-item routerLink="/pro/account/center">
+        <i nz-icon nzType="user" class="mr-sm"></i>
+        {{ 'accountCenter' | translate }}
+      </li>
+      <li nz-menu-item routerLink="/pro/account/settings">
+        <i nz-icon nzType="setting" class="mr-sm"></i>
+        {{ 'accountSetting' | translate }}
+      </li>
+      <li nz-menu-divider></li>
+      <li nz-menu-item (click)="logout()">
+        <i nz-icon nzType="logout" class="mr-sm"></i>
+        {{ 'logout' | translate }}
+      </li>
+    </ul>
+  </nz-dropdown>
+  <sidebar-nav class="d-block py-lg"></sidebar-nav>
+</div>

@@ -1,0 +1,121 @@
+<page-header title="{{ title | translate }}" [breadcrumb]="breadcrumb" [action]="action">
+  <ng-template #breadcrumb>
+    <dc-breadcrumb [histories]="histories"></dc-breadcrumb>
+  </ng-template>
+  <ng-template #action>
+    <button *authValidate (click)="import()" nz-button nzType="primary">
+      <i nz-icon type="upload" theme="outline"></i>{{'import' | translate}}
+    </button>
+    <button *ngIf="!created" nz-button (click)="exit()">{{ 'back' | translate }}</button>
+  </ng-template>
+</page-header>
+
+<nz-card *ngIf="!isImport" [nzBordered]="false">
+  <nz-empty [nzNotFoundContent]="contentTpl" [nzNotFoundFooter]="footerTpl">
+    <ng-template #contentTpl>
+      <span>請先導入未簽名的交易</span>
+    </ng-template>
+    <ng-template #footerTpl>
+      <button nz-button nzType="primary" (click)="import()">{{'import' | translate}}</button>
+    </ng-template>
+  </nz-empty>
+</nz-card>
+
+<nz-card *ngIf="isImport" [nzBordered]="false">
+  <div class="mb-md common-search-panel">
+    <form nz-form [nzLayout]="'inline'" (ngSubmit)="listService.search()">
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.OperationId" type="text" name="OperationId"
+            placeholder="{{ 'operationId' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.FromAddress" type="text" name="FromAddress"
+            placeholder="{{ 'fromAddress' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.ToAddress" type="text" name="ToAddress"
+            placeholder="{{ 'toAddress' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.FeeAddress" type="text" name="FeeAddress"
+            placeholder="{{ 'feeAddress' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.ChangeAddress" type="text" name="ChangeAddress"
+            placeholder="{{ 'changeAddress' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <div style="margin: 10px 0;">
+        <button nz-button type="submit" [nzType]="'primary'">
+          {{ 'search' | translate }}
+        </button>
+        <button *ngIf="hasError" nz-button type="button"
+          [nzType]="listService.invalidSearchOperation ? 'default' : 'danger'" (click)="listService.searchInvalid()">
+          <span *ngIf="!listService.invalidSearchOperation">{{'searchInvalid' | translate}}</span>
+          <span *ngIf="listService.invalidSearchOperation">{{'undoSearchInvalid' | translate}}</span>
+        </button>
+        <button nz-button type="button" (click)="listService.clearConditionAndSearch()">
+          {{'resetSearching' | translate}}
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+
+  <nz-alert *ngIf="hasError" [nzType]="'error'" [nzShowIcon]="true" [nzMessage]="message">
+    <ng-template #message>
+      導入交易有錯誤，不能進行簽名操作
+    </ng-template>
+  </nz-alert>
+
+  <nz-table #txTable nzBordered [nzData]="listService.list || []" [nzBordered]="false"
+    [nzTotal]="listService.pager.totalItems" [nzPageIndex]="listService.pager.currentPage"
+    [nzPageSize]="listService.pager.itemsPerPage" (nzPageIndexChange)="listService.pageChanged($event)"
+    [nzFrontPagination]="false" [nzLoading]="listService.loading">
+    <thead>
+      <tr>
+        <th *ngIf="hasError">{{'errorMsg' | translate }}</th>
+        <th>{{'operationId' | translate }}</th>
+        <th>{{'address' | translate}}</th>
+        <th class="text-right">{{'moneyAmount' | translate}}</th>
+        <th class="text-center" nzWidth="60px">{{'operation' | translate}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of txTable.data; let i = index;">
+        <td  *ngIf="hasError" style="max-width: 130px;" class="text-error">{{item.CheckMessage}}</td>
+        <td style="max-width: 150px; word-wrap: break-word;">{{item.OperationId}}</td>
+        <td>
+          <div>{{'senderAddr' | translate}}: {{item.FromAddress}}</div>
+          <div>{{'toAddr' | translate}}: {{item.ToAddress}}</div>
+          <div>{{'feeAddr' | translate}}: {{item.FeeAddress}}</div>
+          <div>{{'changeAddr' | translate}}: {{item.ChangeAddress}}</div>
+        </td>
+        <td class="text-right">
+            <div>{{'moneyAmount' | translate}}： {{item.USDTAmount | number: '1.1-8'}} USDT</div>
+            <div>{{'serviceCharge' | translate}}： {{item.BTCFeeAmount | number: '1.1-8'}} BTC</div>
+        </td>
+        <td class="text-center">
+          <a (click)="detail(item)">{{'detail' | translate}}</a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+
+  <footer-toolbar [ngStyle]="{'display': readonly ? 'none' : 'flex'}" errorCollect>
+    <button nz-button nzType="primary" type="button" (click)="sign()" [disabled]="!txList || hasError" [nzLoading]="processing">
+      {{'signature' | translate}}
+    </button>
+  </footer-toolbar>
+</nz-card>

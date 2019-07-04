@@ -1,0 +1,32 @@
+<nz-spin [nzSpinning]="http.loading">
+  <div>
+    <form nz-form class="custom-dc-edit-form" [formGroup]="form" (ngSubmit)="submit()" nzLayout="vertical"
+      se-container="1">
+      <se label="路徑" error="請選擇路徑" required>
+        <nz-input-group nzSearch [nzAddOnAfter]="selectPath">
+          <input nz-input type="text" style="min-width: 360px;" formControlName="WalletJsonPath" />
+        </nz-input-group>
+        <ng-template #selectPath>
+          <button type="button" nz-button (click)="selectWalletPath()">選擇錢包目錄</button>
+        </ng-template>
+      </se>
+      <se [label]="pwdLabel" error="請填寫密碼" required>
+        <input type="password" nz-input formControlName="OriginalPwd" />
+        <ng-template #pwdLabel>
+            <span>密碼</span>
+            <a style="margin-left: 10px; font-size:12px;" nz-popover nzTitle="密碼提示" nzTrigger="click" [nzContent]="walletInfo.PWDHint">忘記密碼？</a>
+        </ng-template>
+      </se>
+
+      <nz-divider></nz-divider>
+      <div nz-row>
+        <div nz-col [nzSpan]="24" style="text-align: right;">
+          <error-collect></error-collect>
+          <button nz-button type="button" (click)="close()">{{'close' | translate}}</button>
+          <button nz-button nzType="primary" type="submit"
+            [nzLoading]="http.loading">{{'submit' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</nz-spin>

@@ -1,0 +1,99 @@
+<page-header homeI18n="{{ 'homePage' | i18n }}" [content]="content"  [action]="phActionTpl">
+  <ng-template #content>
+      <p>查看交易列表、對交易進行離線簽名</p>
+  </ng-template>
+  <ng-template #phActionTpl>
+      <button *authValidate (click)="goToSign()" nz-button nzType="primary">
+          <i nz-icon type="form" theme="outline"></i>簽名
+      </button>
+  </ng-template>
+</page-header>
+
+<nz-card [nzBordered]="false">
+  <div class="mb-md common-search-panel">
+    <form nz-form [nzLayout]="'inline'" (ngSubmit)="search()">
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.TxOpreationId" type="text" name="TxOpreationId"
+            placeholder="{{ 'operationId' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <wallet-select [(ngModel)]="listService.condition.WalletId" name="WalletId"
+            placeHolder="{{ 'walletName' | translate }}"></wallet-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.FromAddressLike" type="text" name="FromAddressLike"
+            placeholder="{{ 'fromAddress' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.ToAddressLike" type="text" name="ToAddressLike"
+            placeholder="{{ 'toAddress' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.FeeAddressLike" type="text" name="FeeAddressLike"
+            placeholder="{{ 'feeAddress' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.ChangeAddressLike" type="text" name="ChangeAddressLike"
+            placeholder="{{ 'changeAddress' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-date-picker [(ngModel)]="listService.condition.DateFrom" nzFormat="yyyy-MM-dd HH:mm"
+            [nzShowTime]="{nzFormat: 'HH:mm', nzMinuteStep: '5'}" name="DateFrom"
+            nzPlaceHolder="{{'searchFromTime' | translate}}"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-date-picker [(ngModel)]="listService.condition.DateTo" nzFormat="yyyy-MM-dd HH:mm"
+            [nzShowTime]="{nzFormat: 'HH:mm', nzMinuteStep: '5'}" name="DateTo"
+            nzPlaceHolder="{{'searchToTime' | translate}}"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="!listService.list">
+            {{ 'search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+
+  <st #st [columns]="columns" [size]="'middle'" [data]="listService.list" [total]="listService.pager.totalItems"
+    [pi]="listService.pager.currentPage" [ps]="listService.pager.itemsPerPage" [page]="{ front: false }"
+    [loading]="!listService.list" (change)="stChange($event)">
+    <ng-template st-row="belongWalletTpl" let-item>
+      <div *ngFor="let wallet of item.WalletNames">{{wallet | nullToDefault}}</div>
+    </ng-template>
+    <ng-template st-row="AddressTpl" let-item>
+      <div>{{'senderAddr' | translate}}: {{item.FromAddress}}</div>
+      <div>{{'toAddr' | translate}}: {{item.ToAddress}}</div>
+      <div>{{'feeAddr' | translate}}: {{item.FeeAddress}}</div>
+      <div>{{'changeAddr' | translate}}: {{item.ChangeAddress}}</div>
+    </ng-template>
+    <ng-template st-row="AmountTpl" let-item>
+      <div>{{'moneyAmount' | translate}}： {{item.USDTAmount | number: '1.1-8'}} USDT</div>
+      <div>{{'serviceCharge' | translate}}： {{item.BTCFeeAmount | number: '1.1-8'}} BTC</div>
+    </ng-template>
+    <ng-template st-row="createTimeTpl" let-item>
+      <div>{{ item.UserName }}</div>
+      <div>{{ item.CreateTime | date: 'yyyy-MM-dd HH:mm' }}</div>
+    </ng-template>
+    <ng-template *authValidate st-row="operation" let-item> 
+        <a (click)="detail(item)">{{'detail' | translate}}</a>
+    </ng-template>
+  </st>
+</nz-card>

@@ -1,0 +1,82 @@
+<page-header homeI18n="{{ 'homePage' | i18n }}" [action]="phActionTpl">
+  <ng-template #phActionTpl>
+    <button *authValidate (click)="create()" nz-button nzType="primary">
+        <i nz-icon type="plus" theme="outline"></i>{{ 'createAndExportAddress' | translate }}
+    </button>
+    <button *authValidate (click)="export()" nz-button nzType="primary">
+        <i nz-icon type="download" theme="outline"></i>{{ 'exportAddress' | translate }}
+    </button>
+  </ng-template>
+</page-header>
+
+<nz-card [nzBordered]="false">
+  <div class="mb-md common-search-panel">
+    <form nz-form [nzLayout]="'inline'" (ngSubmit)="search()">
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.AddressStrLike" type="text" name="address"
+            placeholder="{{ 'address' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <wallet-select [(ngModel)]="listService.condition.WalletId" name="WalletId"
+            placeHolder="{{ 'walletName' | translate }}"></wallet-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <app-dict-selection [dictType]="'AddressCategory'" [(ngModel)]="listService.condition.Category"
+            emptyTitle="{{ 'addressCategory' | translate }}" name="addressCategory"></app-dict-selection>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <app-dict-selection [dictType]="'AddressType'" [(ngModel)]="listService.condition.Type"
+            emptyTitle="{{ 'addressType' | translate }}" name="addressType"></app-dict-selection>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.OprationBatchNo" type="text" name="OprationBatchNo"
+            placeholder="{{ 'batchNo' | translate }}" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-date-picker [(ngModel)]="listService.condition.DateFrom" nzFormat="yyyy-MM-dd HH:mm" 
+          [nzShowTime]="{nzFormat: 'HH:mm', nzMinuteStep: '5'}" name="DateFrom" nzPlaceHolder="{{'searchFromTime' | translate}}"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-date-picker [(ngModel)]="listService.condition.DateTo" nzFormat="yyyy-MM-dd HH:mm" 
+          [nzShowTime]="{nzFormat: 'HH:mm', nzMinuteStep: '5'}" name="DateTo" nzPlaceHolder="{{'searchToTime' | translate}}"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="!listService.list">
+            {{ 'search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+
+  <st #st [columns]="columns" [size]="'middle'" [data]="listService.list" [total]="listService.pager.totalItems"
+    [pi]="listService.pager.currentPage" [ps]="listService.pager.itemsPerPage" [page]="{ front: false }"
+    [loading]="!listService.list" (change)="stChange($event)">
+    <ng-template st-row="addressCategoryTpl" let-item let-index="index">
+      {{ item.Category | nxDict: 'AddressCategory' }}
+    </ng-template>
+    <ng-template st-row="addressTypeTpl" let-item let-index="index">
+      {{ item.Type | nxDict: 'AddressType' }}
+    </ng-template>
+    <ng-template st-row="createTimeTpl" let-item let-index="index">
+      <div>{{ item.UserName }}</div>
+      <div>{{ item.CreateTime | date: 'yyyy-MM-dd HH:mm' }}</div>
+    </ng-template>
+    <ng-template *authValidate st-row="operation" let-item let-index="index"> </ng-template>
+  </st>
+</nz-card>

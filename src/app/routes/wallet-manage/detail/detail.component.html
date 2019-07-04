@@ -1,0 +1,11 @@
+<sv-container labelWidth="110" col="1">
+    <sv label="錢包名">{{wallet.Name}}</sv>
+    <sv label="是否可用" [type]="wallet.IsLogin ? 'success' : 'danger'">
+        <span *ngIf="wallet.IsLogin">已解鎖</span>
+        <span *ngIf="!wallet.IsLogin">鎖定中</span>
+    </sv>
+    <sv label="已使用地址數">{{wallet.AllAddressCount | nullToDefault: '0'}}</sv>
+    <sv label="交易數">0</sv>
+    <sv label="創建時間">{{wallet.CreateTime | date: 'yyyy-MM-dd HH:mm'}}</sv>
+    <sv label="描述">{{wallet.Remark | nullToDefault}}</sv>
+</sv-container>

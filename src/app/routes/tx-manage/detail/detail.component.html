@@ -1,0 +1,28 @@
+<div>
+  <sv-container size="large" title="基本信息">
+    <sv label="{{'fromAddress' | translate}}" col="1">{{txInfo.FromAddress}}</sv>
+    <sv label="{{'toAddress' | translate}}" col="1">{{txInfo.ToAddress}}</sv>
+    <sv label="{{'feeAddress' | translate}}" col="1">{{txInfo.FeeAddress}}</sv>
+    <sv label="{{'changeAddress' | translate}}" col="1">{{txInfo.ChangeAddress}}</sv>
+    <sv label="交易金額" col="1" type="primary">
+        <span>{{txInfo.USDTAmount | number: '1.1-8'}} USDT</span>
+    </sv>
+    <sv label="手續費用" col="1" type="primary">
+        <span>{{txInfo.BTCFeeAmount | number: '1.1-8'}} USDT</span>
+    </sv>
+  </sv-container>
+  <nz-divider></nz-divider>
+
+  <div class="text-md mb-md section-title" style="margin-top: 34px;">交易詳細</div>
+  <form nz-form>
+    <nz-form-item>
+      <div>
+        <nz-form-control>
+          <textarea nz-input name="TransactionJson" [(ngModel)]="txInfo.TxJson" [disabled]="true" class="json-input">
+          </textarea>
+        </nz-form-control>
+      </div>
+    </nz-form-item>
+  </form>
+</div>
+

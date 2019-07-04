@@ -1,0 +1,47 @@
+<nz-card [nzActions]="[detailAct, editAct, lockAct, recoverAct]">
+	<dc-ribbon text="已解鎖" disabledText="鎖定中" [disabled]="!walletInfo.IsLogin"></dc-ribbon>
+	<nz-card-meta [nzAvatar]="avatarTemplate" nzTitle="{{walletInfo.Name | nullToDefault}}" 
+	nzDescription="{{walletInfo.Remark | nullToDefault}}"> </nz-card-meta>
+	<div class="card-info d-flex">
+		<div>
+			<p>地址</p>
+			<p>
+				{{walletInfo.AllAddressCount}}
+				<em class="wan">個</em>
+			</p>
+		</div>
+		<div>
+			<p>交易</p>
+			<p>{{walletInfo.AllTrasactionCount}}
+				<em class="wan">個</em>
+			</p>
+		</div>
+	</div>
+</nz-card>
+<ng-template #avatarTemplate>
+	<nz-avatar [nzSrc]="'./assets/images/wallet.png'"></nz-avatar>
+</ng-template>
+<ng-template #detailAct>
+	<a (click)="detail()">
+		<i nz-icon type="profile" nz-tooltip nzTitle="詳細"></i>
+	</a>
+</ng-template>
+<ng-template #editAct>
+	<a (click)="editWallet()">
+		<i nz-icon type="edit" nz-tooltip nzTitle="編輯"></i>
+	</a>
+</ng-template>
+<ng-template #lockAct>
+	<a (click)="lockWallet()">
+		<i *ngIf="walletInfo.IsLogin" nz-icon type="lock" nz-tooltip nzTitle="鎖定"></i>
+		<i *ngIf="!walletInfo.IsLogin" nz-icon type="unlock" nz-tooltip nzTitle="解鎖"></i>
+	</a>
+</ng-template>
+<ng-template #recoverAct>
+	<a (click)="recoverWallet()">
+		<i nz-icon type="sync" nz-tooltip nzTitle="恢復"></i>
+	</a>
+</ng-template>
+<ng-template #actionEllipsis>
+	<i nz-icon type="ellipsis"></i>
+</ng-template>

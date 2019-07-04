@@ -1,0 +1,24 @@
+<nz-spin [nzSpinning]="processing">
+  <div>
+    <form nz-form class="custom-dc-edit-form" [formGroup]="form" (ngSubmit)="submit()" nzLayout="vertical"
+      se-container="1">
+      <se label="導入文件" error="請選擇文件" required>
+        <nz-input-group nzSearch [nzAddOnAfter]="selectPath">
+          <input nz-input type="text" style="min-width: 360px;" formControlName="PathFile" />
+        </nz-input-group>
+        <ng-template #selectPath>
+          <button type="button" nz-button (click)="selectFolderPath()">選擇文件</button>
+        </ng-template>
+      </se>
+
+      <nz-divider></nz-divider>
+      <div nz-row>
+        <div nz-col [nzSpan]="24" style="text-align: right;">
+          <error-collect></error-collect>
+          <button nz-button type="button" (click)="close()">{{'close' | translate}}</button>
+          <button nz-button nzType="primary" type="submit" [nzLoading]="http.loading">{{'submit' | translate}}</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</nz-spin>

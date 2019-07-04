@@ -1,0 +1,70 @@
+<page-header homeI18n="{{ 'homePage' | i18n }}" [action]="phActionTpl">
+  <ng-template #phActionTpl>
+    <button (click)="manage()" nz-button nzType="primary">{{ 'add' | translate }}</button>
+  </ng-template>
+</page-header>
+
+<nz-card [nzBordered]="false">
+  <div class="mb-md common-search-panel">
+    <form nz-form [nzLayout]="'inline'" (ngSubmit)="search()">
+      <nz-form-item>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="listService.condition.UserNameLike" type="text" name="name" placeholder="用戶名" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <app-dict-selection [dictType]="'RoleType'" [(ngModel)]="listService.condition.RoleId"
+            emptyTitle="{{ 'userRole' | translate }}" name="roleId"></app-dict-selection>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <app-dict-selection [dictType]="'UserStatus'" [(ngModel)]="listService.condition.IsActive"
+            emptyTitle="{{ 'status' | translate }}" name="status"></app-dict-selection>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button type="submit" [nzType]="'primary'" [nzLoading]="!listService.list">
+            {{ 'search' | translate }}
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+
+  <st #st [columns]="columns" [size]="'middle'" [data]="listService.list" [total]="listService.pager.totalItems"
+    [pi]="listService.pager.currentPage" [ps]="listService.pager.itemsPerPage" [page]="{ front: false }"
+    [loading]="!listService.list" (change)="stChange($event)">
+    <ng-template st-row="roleTpl" let-item let-index="index">
+      {{item.RoleId | nxDict: 'RoleType'}}
+    </ng-template>
+    <ng-template st-row="statusTpl" let-item let-index="index">
+      <nz-badge *ngIf="item.IsActive" nzStatus="success" nzText="{{ item.IsActive | nxDict: 'UserStatus' }}"></nz-badge>
+      <nz-badge *ngIf="!item.IsActive" nzStatus="default" nzText="{{ item.IsActive | nxDict: 'UserStatus' }}">
+      </nz-badge>
+    </ng-template>
+    <ng-template *authValidate st-row="operation" let-item let-index="index">
+      <a *ngIf="currentUserRole === 1 || currentUserRole == item.RoleId" (click)="manage(item.UserId)">{{ 'edit' | translate }}</a>
+      <ng-container *ngIf="currentUserRole === 1">
+        <nz-divider *ngIf="item.UserId != currentUserId" nzType="vertical"></nz-divider>
+        <a *ngIf="item.IsActive && item.UserId != currentUserId" (click)="deactivate(item.UserId)">{{
+          'deactivate' | translate
+        }}</a>
+        <a *ngIf="!item.IsActive && item.UserId != currentUserId" (click)="activate(item.UserId)">{{
+          'activate' | translate
+        }}</a>
+      </ng-container>
+      <ng-container *ngIf="currentUserRole !== 1 && item.RoleId === currentUserRole && item.UserId != currentUserId">
+        <nz-divider nzType="vertical"></nz-divider>
+        <a *ngIf="item.IsActive" (click)="deactivate(item.UserId)">{{
+          'deactivate' | translate
+        }}</a>
+        <a *ngIf="!item.IsActive" (click)="activate(item.UserId)">{{
+          'activate' | translate
+        }}</a>
+      </ng-container>
+    </ng-template>
+  </st>
+</nz-card>

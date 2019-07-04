@@ -1,0 +1,36 @@
+<form nz-form [formGroup]="form" (ngSubmit)="submit()" role="form">
+  <nz-tabset [nzAnimated]="false" class="tabs">
+    <nz-tab [nzTitle]="'賬戶密碼登入'">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-input-group nzSize="large" nzPrefixIcon="user">
+            <input nz-input formControlName="userName" placeholder="用戶名" />
+          </nz-input-group>
+          <nz-form-explain *ngIf="userName.dirty && userName.errors">
+            請輸入用戶名
+          </nz-form-explain>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-input-group nzSize="large" nzPrefixIcon="lock">
+            <input nz-input type="password" formControlName="password" placeholder="密碼" />
+          </nz-input-group>
+          <nz-form-explain *ngIf="password.dirty && password.errors">
+            請輸入密碼
+          </nz-form-explain>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-tab>
+  </nz-tabset>
+  <nz-form-item>
+    <nz-col [nzSpan]="12">
+      <label nz-checkbox formControlName="remember">自動登入</label>
+    </nz-col>
+  </nz-form-item>
+  <nz-form-item>
+    <button nz-button type="submit" nzType="primary" nzSize="large" [nzLoading]="http.loading" nzBlock>
+      登入
+    </button>
+  </nz-form-item>
+</form>

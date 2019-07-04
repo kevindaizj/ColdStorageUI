@@ -1,0 +1,21 @@
+<page-header homeI18n="{{ 'homePage' | i18n }}" [content]="content" [action]="action"> 
+    <ng-template #content>
+        <p>所有錢包均為絕密數據，請妥善保管您的錢包文件</p>
+    </ng-template>
+    <ng-template #action>
+        <button *authValidate nz-button nzType="primary" (click)="addWallet()">
+            <i nz-icon type="plus" theme="outline"></i>{{'createNewWallet' | translate}}
+        </button>
+    </ng-template>
+</page-header>
+
+<div nz-row [nzGutter]="{ xs: 8, sm: 8, md: 10, lg: 10, xl: 32, xxl: 32 }">
+  <nz-spin [nzSpinning]="loading">
+    <ng-container *ngFor="let item of wallets">
+        <app-wallet-card nz-col nzSpan="8" [walletInfo]="item" 
+            (showDetail)="showWalletDetail($event)" (edit)="editWallet($event)"
+            (lock)="lockWallet($event)" (unlock)="unlockWallet($event)" (recover)="recoverWallet($event)">
+        </app-wallet-card>
+    </ng-container>
+ </nz-spin>
+</div>
